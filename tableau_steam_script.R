@@ -46,6 +46,8 @@ library(xgboost)
 # Data Preparation
 #----------------------------------------------------
 
+# The original data was provided by Kaggle Contributor and ML Engineer at ByteDance, Luthfi Mahendra.
+# Data Source: https://www.kaggle.com/luthfim/steam-reviews-dataset
 
 ##### download a data file manually from Kaggle.
 # download zip file from
