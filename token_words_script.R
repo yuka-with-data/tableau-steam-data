@@ -1,4 +1,5 @@
-# Create A Steam Word Data That Removed StopWords and Common Words
+# Create A Steam Word Data For A Word Cloud
+# Removed StopWords, Outliers and Common Words
 
 #----------------------------------------------------
 # install missing packages and load required packages
@@ -93,8 +94,16 @@ funny_outlier_val # in validation
 # Remove outliers from both steam_main_data and validation set
 steam_main_data <- steam_main_data %>% 
   dplyr::slice(-funny_outlier)
-validation <- validation %>% 
-  dplyr::slice(-funny_outlier_val)
+
+
+# Remove Stop Words
+#data("stop_words")
+#token_words <- main_rgx %>% unnest_tokens(word, new_review) %>% anti_join(stop_words)
+
+# Remove Stop Words
+data("stop_words")
+steam_main_data <- steam_main_data %>% unnest_tokens(word, review) %>% anti_join(stop_words)
+
 
 ## Restructuring Data Prior To Training Classification Algorithms
 
@@ -136,7 +145,7 @@ rgx2 <- "[0-9]+"
 
 # Replace and remove words using regex
 # words and symbol removal
-main_rgx <- str_replace_all(steam_main_data$review, rgx1, "") %>% as.data.frame()
+main_rgx <- str_replace_all(steam_main_data$word, rgx1, "") %>% as.data.frame()
 main_rgx <- str_replace_all(main_rgx$., rgx4, "") %>% as.data.frame()
 main_rgx<- str_replace_all(main_rgx$., rgx5, " ") %>% as.data.frame()
 main_rgx <- str_replace_all(main_rgx$., rgx6, "") %>% as.data.frame()
@@ -168,11 +177,10 @@ main_rgx <- str_replace_all(main_rgx$., rgx2, "") %>% as.data.frame()
 main_rgx <- str_replace_all(main_rgx$., rgx3, "") %>% as.data.frame()
 
 # change the column name
-main_rgx <- rename(main_rgx, new_review = .)
+main_rgx <- rename(main_rgx, new_word = .)
 
-# Remove Stop Words
-data("stop_words")
-token_words <- main_rgx %>% unnest_tokens(word, new_review) %>% anti_join(stop_words)
+# remove missing values in rows and save it in a new variable
+token_words <- main_rgx %>% drop_na()
 
 #----------------------------------------------------
 # How To Download the dataframe to your directory
@@ -180,8 +188,6 @@ token_words <- main_rgx %>% unnest_tokens(word, new_review) %>% anti_join(stop_w
 # Use write.csv function from base R to export the dataframe to CSV file
 # Include the dataframe, and your file path + 
 
-# write.csv(token_words, ""C:\\Users\\your_file_path\\\\token_words_df.csv", row.name = FALSE")
+# write.csv(token_words, ""C:\\Users\\your_file_path\\token_words_df.csv", row.name = FALSE")
 
 #----------------- END ------------------------
-
-
